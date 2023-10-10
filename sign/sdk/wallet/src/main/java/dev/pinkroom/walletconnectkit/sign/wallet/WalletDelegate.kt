@@ -20,16 +20,22 @@ internal object WalletDelegate : SignClient.WalletDelegate {
         SignClient.setWalletDelegate(this)
     }
 
-    override fun onSessionProposal(sessionProposal: Sign.Model.SessionProposal) {
+    override fun onSessionDelete(deletedSession: Sign.Model.DeletedSession) {
+        scope.launch { _events.emit(deletedSession) }
+    }
+
+    override fun onSessionProposal(
+        sessionProposal: Sign.Model.SessionProposal,
+        verifyContext: Sign.Model.VerifyContext
+    ) {
         scope.launch { _events.emit(sessionProposal) }
     }
 
-    override fun onSessionRequest(sessionRequest: Sign.Model.SessionRequest) {
+    override fun onSessionRequest(
+        sessionRequest: Sign.Model.SessionRequest,
+        verifyContext: Sign.Model.VerifyContext
+    ) {
         scope.launch { _events.emit(sessionRequest) }
-    }
-
-    override fun onSessionDelete(deletedSession: Sign.Model.DeletedSession) {
-        scope.launch { _events.emit(deletedSession) }
     }
 
     override fun onSessionSettleResponse(settleSessionResponse: Sign.Model.SettledSessionResponse) {
